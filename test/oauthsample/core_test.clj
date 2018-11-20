@@ -1,6 +1,6 @@
-(ns dga-pub.core-test
+(ns oauthsample.core-test
   (:require [clojure.test :refer :all]
-            [dga-pub.core :refer :all]))
+            [oauth-sample.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."

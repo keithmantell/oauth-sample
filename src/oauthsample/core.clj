@@ -1,4 +1,4 @@
-(ns dga-pub.core
+(ns oauthsample.core
   (:require [compojure.core :refer [defroutes routes GET POST]]
             [compojure.handler :as handler]
             [hiccup.page :refer [html5]]
@@ -17,23 +17,27 @@
    [:html
     [:head
      [:link {:rel "stylesheet" :href "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"}]
-     [:title "Welcome to the demo SP"]]
+     [:title "Welcome to the Oauth demo"]]
     [:body.container
-     [:h1 "Hey, you've found your local Service Provider!!!"]
-     [:p.lead "Client ID: " client-id "Client secret: " client-secret ]
-     [:p.lead "You can get the SAML metadata for this SP " ]
-     [:a.btn.btn-primary {:href (str "https://github.com/login/oauth/authorize?scope=user:email&client_id=" client-id)} "Take me to the IdP!!!"]]]))
+     [:h1 "Welcome to the Oauth demo"]
+     [:p.lead "This demo will check the authentication of the app and user with the Github oauth server."]
+     [:p.lead "Please check that the Client ID and Client Secret are set correctly"]
+     [:p.lead "Client ID: " client-id ]
+     [:p.lead "Client secret: " client-secret ]
+     [:p.lead "" ]
+     [:a.btn.btn-primary {:href (str "https://github.com/login/oauth/authorize?scope=user:email&client_id=" client-id)} "Check my authentication"]]]))
 
 (defn request-auth-token [request]
   (html5
     [:html
      [:head
       [:link {:rel "stylesheet" :href "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"}]
-      [:title "Welcome to the demo SP - page 2"]]
+      [:title "Welcome to the Oauth Demo - page 2"]]
      [:body.container
       [:h1 "Here is the code response from the Oauth server"]
       [:p.lead "Callback code: " (get-in request [:params :code]) ]
-      [:a.btn.btn-primary {:href (str "./post-form?code=" (get-in request [:params :code]))} "Get the auth token!!!"]]]))
+      [:p.lead "With this code we can get an access token for API calls"]
+      [:a.btn.btn-primary {:href (str "./post-form?code=" (get-in request [:params :code]))} "Get the access token!!!"]]]))
 
 (defn split-response [s]
   (reduce (fn [acc [k v]] (assoc acc (keyword k) (String. v))) {} (partition 2 (clojure.string/split s #"[=&]"))))
@@ -56,10 +60,11 @@
      [:html
       [:head
        [:link {:rel "stylesheet" :href "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"}]
-       [:title "Welcome to the demo SP - page 3"]]
+       [:title "Welcome to the Oauth demo - page 3"]]
       [:body.container
        [:h1 "Here is the code response from the Oauth server"]
        [:p.lead "Request: " request " Access Token: " access_token ]
+       [:p.lead "Now we will use the token to get User data"]
        [:a.btn.btn-primary {:href (str "https://api.github.com/user?access_token=" request)} "Get user data!!!"]]])))
 
 
@@ -86,13 +91,4 @@
  )
 
 (def handler
-  ;(wrap-params
-              (handler/api main-routes)
-   ;           )
-  )
-
-
-;(defn handler [request]
-;  {:status 200
-;   :headers {"Content-Type" "text/html"}
-;   :body "Hello World"})
+   (handler/api main-routes))

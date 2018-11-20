@@ -1,4 +1,4 @@
-(defproject dga-pub "0.1.0-SNAPSHOT"
+(defproject oauth-sample "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -9,5 +9,5 @@
                  [cheshire "5.8.1"]
                  [org.clojure/tools.reader "1.3.2"]
                  [clj-http "3.9.1"]]
-  :ring {:handler dga-pub.core/handler}
+:ring {:handler oauthsample.core/handler}
   )
