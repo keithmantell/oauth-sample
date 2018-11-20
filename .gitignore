@@ -1,3 +1,7 @@
 /.lein-repl-history
 /.nrepl-port
 /target/classes/META-INF/maven/oauth-sample/oauth-sample/pom.properties
+/target/classes/oauthsample/core/main$_main.class
+/target/classes/oauthsample/core/main$fn__182.class
+/target/classes/oauthsample/core/main$loading__6434__auto____180.class
+/target/*

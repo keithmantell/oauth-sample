@@ -6,8 +6,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [clj-http.client :as client]
             [clojure.pprint :as pp]
-            [clojure.string]
-            ))
+            [clojure.string]))
 
 (def client-id (System/getenv "CLIENT_ID"))
 (def client-secret (System/getenv "CLIENT_SECRET"))
@@ -23,7 +22,7 @@
      [:p.lead "This demo will check the authentication of the app and user with the Github oauth server."]
      [:p.lead "Please check that the Client ID and Client Secret are set correctly"]
      [:p.lead "Client ID: " client-id ]
-     [:p.lead "Client secret: " client-secret ]
+     [:p.lead "Client secret: xxxxxx" (count client-secret) ]
      [:p.lead "" ]
      [:a.btn.btn-primary {:href (str "https://github.com/login/oauth/authorize?scope=user:email&client_id=" client-id)} "Check my authentication"]]]))
 

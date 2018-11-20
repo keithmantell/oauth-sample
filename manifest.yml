@@ -1,0 +1,10 @@
+applications:
+- name: dga
+  path: target/oauth-sample-0.1.0-SNAPSHOT-standalone.jar
+  memory: 1024M
+  instances: 1
+  command: null
+  routes:
+  - route: dga-clj1.mybluemix.net
+  disk_quota: 1024M
+  health-check-type: http
