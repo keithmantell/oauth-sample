@@ -9,5 +9,6 @@
                  [cheshire "5.8.1"]
                  [org.clojure/tools.reader "1.3.2"]
                  [clj-http "3.9.1"]]
-:ring {:handler oauthsample.core/handler}
+  :plugins [[lein-ring "0.12.4"]]
+  :ring {:handler oauthsample.core/handler}
   )

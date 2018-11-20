@@ -1,10 +1,15 @@
 # oauth-sample
 
-A sample web app using public Oauth to demo how to use Ouath2 in Clojure with Github as the authority.
+A sample web app using public Oauth to demo how to use Ouath2 in
+Clojure with Github as the authority.
+
+## Setup
+
+If using lein ring server see these setup instructions
 
 ## Usage
 
-- Register you app with Github
+- Register you app with Github https://developer.github.com/apps/building-oauth-apps/
 - Set CLIENT_ID and CLIENT_SECRET environment variables as per the values given during Github registration
 - Run 'lein ring server' and navigate to browser page, usually http://localhost:3000
 
