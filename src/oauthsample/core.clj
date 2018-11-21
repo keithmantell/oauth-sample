@@ -4,6 +4,7 @@
             [hiccup.page :refer [html5]]
             [hiccup.form :as f]
             [ring.middleware.params :refer [wrap-params]]
+            [clojure.tools.logging :as log]
             [clj-http.client :as client]
             [clojure.pprint :as pp]
             [clojure.string]))
@@ -13,6 +14,8 @@
 (def authorization-endpoint (System/getenv "AUTHORIZATION_ENDPOINT" ))
 (def token-endpoint (System/getenv "TOKEN_ENDPOINT"))
 (def scope (System/getenv "SCOPE"))
+
+(log/info "Client ID: " (System/getenv "CLIENT_ID"))
 
 (defn front-door []
   (html5
@@ -39,7 +42,7 @@
      [:h1 "Here is the code response from the Oauth server"]
      [:p.lead "Callback code: " (get-in request [:params :code]) ]
      [:p.lead "With this code we can get an access token for API calls"]
-   ;  [:p.lead "Request content" request]
+                                        ;  [:p.lead "Request content" request]
      [:a.btn.btn-primary {:href (str "./post-form?code=" (get-in request [:params :code]))} "Get the access token!!!"]]]))
 
 (defn split-response [s]
