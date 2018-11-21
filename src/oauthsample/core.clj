@@ -10,6 +10,9 @@
 
 (def client-id (System/getenv "CLIENT_ID"))
 (def client-secret (System/getenv "CLIENT_SECRET"))
+(def authorization-endpoint (System/getenv "AUTHORIZATION_ENDPOINT" ))
+(def token-endpoint (System/getenv "TOKEN_ENDPOINT"))
+(def scope (System/getenv "SCOPE"))
 
 (defn front-door []
   (html5
@@ -24,19 +27,20 @@
      [:p.lead "Client ID: " client-id ]
      [:p.lead "Client secret: xxxxxx" (count client-secret) ]
      [:p.lead "" ]
-     [:a.btn.btn-primary {:href (str "https://github.com/login/oauth/authorize?scope=user:email&client_id=" client-id)} "Check my authentication"]]]))
+     [:a.btn.btn-primary {:href (str authorization-endpoint "?scope=" scope "&client_id=" client-id)} "Check my authentication"]]]))
 
 (defn request-auth-token [request]
   (html5
-    [:html
-     [:head
-      [:link {:rel "stylesheet" :href "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"}]
-      [:title "Welcome to the Oauth Demo - page 2"]]
-     [:body.container
-      [:h1 "Here is the code response from the Oauth server"]
-      [:p.lead "Callback code: " (get-in request [:params :code]) ]
-      [:p.lead "With this code we can get an access token for API calls"]
-      [:a.btn.btn-primary {:href (str "./post-form?code=" (get-in request [:params :code]))} "Get the access token!!!"]]]))
+   [:html
+    [:head
+     [:link {:rel "stylesheet" :href "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"}]
+     [:title "Welcome to the Oauth Demo - page 2"]]
+    [:body.container
+     [:h1 "Here is the code response from the Oauth server"]
+     [:p.lead "Callback code: " (get-in request [:params :code]) ]
+     [:p.lead "With this code we can get an access token for API calls"]
+   ;  [:p.lead "Request content" request]
+     [:a.btn.btn-primary {:href (str "./post-form?code=" (get-in request [:params :code]))} "Get the access token!!!"]]]))
 
 (defn split-response [s]
   (reduce (fn [acc [k v]] (assoc acc (keyword k) (String. v))) {} (partition 2 (clojure.string/split s #"[=&]"))))
@@ -44,7 +48,7 @@
 (defn post-auth-token [req]
   (let [code  (get-in req [:params :code])]
     (println "Code is: " code)
-    (client/post "https://github.com/login/oauth/access_token"
+    (client/post token-endpoint
                  {:as :clojure
                   :form-params
                   {:client_id client-id
