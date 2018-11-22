@@ -27,10 +27,12 @@
      [:h1 "Welcome to the Oauth demo"]
      [:p.lead "This demo will check the authentication of the app and user with the Github oauth server."]
      [:p.lead "Please check that the Client ID and Client Secret are set correctly"]
-     [:p.lead "Client ID: " client-id ]
-     [:p.lead "Client secret: xxxxxx" (count client-secret) ]
-     [:p.lead "" ]
-     [:a.btn.btn-primary {:href (str authorization-endpoint "?scope=" scope "&client_id=" client-id)} "Check my authentication"]]]))
+     (if (= (count client-id) 0)
+       [:p.lead "!! Client ID not set !!  Please set (via environment variable CLIENT_ID) and restart"]
+       (html5  [:p.lead "Client ID: " client-id ]
+               [:p.lead "Client secret: xxxxxx" (count client-secret) ]
+               [:p.lead "" ]
+               [:a.btn.btn-primary {:href (str authorization-endpoint "?scope=" scope "&client_id=" client-id)} "Check my authentication"]))]]))
 
 (defn request-auth-token [request]
   (html5
@@ -43,7 +45,7 @@
      [:p.lead "Callback code: " (get-in request [:params :code]) ]
      [:p.lead "With this code we can get an access token for API calls"]
                                         ;  [:p.lead "Request content" request]
-     [:a.btn.btn-primary {:href (str "./post-form?code=" (get-in request [:params :code]))} "Get the access token!!!"]]]))
+     [:a.btn.btn-primary {:href (str "./get-access-token?code=" (get-in request [:params :code]))} "Get the access token!!!"]]]))
 
 (defn split-response [s]
   (reduce (fn [acc [k v]] (assoc acc (keyword k) (String. v))) {} (partition 2 (clojure.string/split s #"[=&]"))))
@@ -78,23 +80,20 @@
   (GET "/" []
        {:status  200
         :body    (front-door)})
-  (GET "/post-form" code
+  (GET "/get-access-token" code
        (let [body (str (get (post-auth-token code) :body "missing"))
              token-body (split-response body)
              access_token (get token-body :access_token)]
          {:status  200
           :headers {"Content-Type" "text/html"}
           :body    (request-info-page access_token)}))
-  (GET "/post-user-data" request ;; what is in his request?
-         {:status  200
-          :headers {"Content-Type" "text/html"}
-          :body    (request-info-page request)})
+
   (GET "/callback" request
        {:status  200
         :headers {"Content-Type" "text/html"}
         :body (request-auth-token request)
         })
- )
+  )
 
 (def handler
    (handler/api main-routes))
