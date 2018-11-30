@@ -5,3 +5,6 @@
 /target/classes/oauthsample/core/main$fn__182.class
 /target/classes/oauthsample/core/main$loading__6434__auto____180.class
 /target/*
+/log/logger1.log
+/resources/log4j.properties
+/src/log4j.properties

@@ -3,6 +3,7 @@
             [compojure.handler :as handler]
             [hiccup.page :refer [html5]]
             [hiccup.form :as f]
+            [hiccup.table :as tab]
             [ring.middleware.params :refer [wrap-params]]
             [clojure.tools.logging :as log]
             [clj-http.client :as client]
@@ -29,10 +30,15 @@
      [:p.lead "Please check that the Client ID and Client Secret are set correctly"]
      (if (= (count client-id) 0)
        [:p.lead "!! Client ID not set !!  Please set (via environment variable CLIENT_ID) and restart"]
-       (html5  [:p.lead "Client ID: " client-id ]
-               [:p.lead "Client secret: xxxxxx" (count client-secret) ]
+       (html5  [:p.lead "Values used:" ]
+               (hiccup.table/to-table1d (list {:variable "Client ID" :value client-id}
+                                              {:variable "Client Secret (length)" :value (count client-secret)}
+                                              {:variable "Authorization Endpoint " :value authorization-endpoint}
+                                              {:variable "Token Endpoint" :value token-endpoint}
+                                              {:variable "Scope" :value scope})
+                                        [:variable "Variable" :value "Value" ])
                [:p.lead "" ]
-               [:a.btn.btn-primary {:href (str authorization-endpoint "?scope=" scope "&client_id=" client-id)} "Check my authentication"]))]]))
+               [:a.btn.btn-primary {:href (str authorization-endpoint "?scope=" scope "&client_id=" client-id "&response_type=code")} "Check my authentication"]))]]))
 
 (defn request-auth-token [request]
   (html5
@@ -50,20 +56,27 @@
 (defn split-response [s]
   (reduce (fn [acc [k v]] (assoc acc (keyword k) (String. v))) {} (partition 2 (clojure.string/split s #"[=&]"))))
 
+
+(defn cl-print [x] (doto x
+                     (pp/pprint)))
+
 (defn post-auth-token [req]
   (let [code  (get-in req [:params :code])]
-    (println "Code is: " code)
     (client/post token-endpoint
-                 {:as :clojure
+                 {:as :json
                   :form-params
                   {:client_id client-id
                    :client_secret client-secret
                    :code code
+                   :grant_type "authorization_code"
                    }})))
 
 
 (defn request-info-page [request]
-  (let [access_token (get-in request [:params :code])]
+  (let [access_token (get-in request [:body :access_token])]
+    (pp/pprint (str  "Oauth Token response" access_token))
+    (log/info "Auth Token Response: " request)
+    (log/info "Auth Token: " access_token) ;remove for production
     (html5
      [:html
       [:head
@@ -71,22 +84,23 @@
        [:title "Welcome to the Oauth demo - page 3"]]
       [:body.container
        [:h1 "Here is the code response from the Oauth server"]
-       [:p.lead "Request: " request " Access Token: " access_token ]
+       [:p.lead "Request: " (pp/pprint request) " Access Token: " access_token ]
        [:p.lead "Now we will use the token to get User data"]
-       [:a.btn.btn-primary {:href (str "https://api.github.com/user?access_token=" request)} "Get user data!!!"]]])))
-
+       [:a.btn.btn-primary {:href
+                                        ;git version (str "https://api.github.com/user?access_token=" request)
+                            (str "https://api.github.com/user?access_token=" access_token)
+                            } "Get user data!!!"]]])))
 
 (defroutes main-routes
   (GET "/" []
        {:status  200
         :body    (front-door)})
   (GET "/get-access-token" code
-       (let [body (str (get (post-auth-token code) :body "missing"))
-             token-body (split-response body)
-             access_token (get token-body :access_token)]
+       (let [body (post-auth-token code)
+             access_token (get-in body [:body :access-token]) ]
          {:status  200
           :headers {"Content-Type" "text/html"}
-          :body    (request-info-page access_token)}))
+          :body   (request-info-page body)}))
 
   (GET "/callback" request
        {:status  200

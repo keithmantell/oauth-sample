@@ -9,7 +9,8 @@
                  [cheshire "5.8.1"]
                  [org.clojure/tools.reader "1.3.2"]
                  [org.clojure/tools.logging "0.4.1"]
-                ; [org.slf4j/slf4j-log4j12 "1.7.25"]
+                                        ; [org.slf4j/slf4j-log4j12 "1.7.25"]
+                 [hiccup-table "0.2.0"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
                                                     javax.jms/jms
                                                     com.sun.jdmk/jmxtools
