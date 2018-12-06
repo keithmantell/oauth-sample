@@ -1,0 +1,9 @@
+#!/bin/sh
+export AUTHORIZATION_ENDPOINT="https://github.com/login/oauth/authorize"
+export CLIENT_ID=<set your value from registration>
+export CLIENT_SECRET=<set your value from registration>
+export HOST_URL="https://my-website"
+export REDIRECT_URI="/callback"
+export TOKEN_ENDPOINT="https://github.com/login/oauth/access_token"
+
+export SCOPE="user:email"
