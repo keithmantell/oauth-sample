@@ -30,7 +30,7 @@ authorization server.
  registration step
  -- AUTHORIZATION_ENDPOINT for the authorization server (see example
  set-variables file)
- -- TOKEN_ENDPOINT to exchange the authorixzation code for tokens ( as
+ -- TOKEN_ENDPOINT to exchange the authorization code for tokens ( as
  per the Oauth Server setup)
  -- HOST_URL for your website (e.g. https://localhost:3000 - this is
  also set during registration)
