@@ -5,10 +5,14 @@
             [hiccup.form :as f]
             [hiccup.table :as tab]
             [ring.middleware.params :refer [wrap-params]]
+            [ring.logger :as logger]
             [clojure.tools.logging :as log]
             [clj-http.client :as client]
             [clojure.pprint :as pp]
-            [clojure.string]))
+            [clojure.string]
+            [clojure.spec.alpha :as s]))
+
+; (s/def ::request (s/keys :req [::params]))
 
 (def client-id (System/getenv "CLIENT_ID"))
 
@@ -44,6 +48,9 @@
                                         [:variable "Variable" :value "Value"])
                [:p.lead ""]
                [:a.btn.btn-primary {:href (str authorization-endpoint "?scope=" scope "&client_id=" client-id "&response_type=code")} "Check my authentication"]))]]))
+
+;(s/fdef request-auth-token
+;  :args (s/keys :request [::params]))
 
 (defn request-auth-token [request]
   (html5
@@ -98,6 +105,7 @@
   (GET "/" []
        {:status  200
         :body    (front-door)})
+
   (GET "/get-access-token" code
        (let [body (post-auth-token code)
              access_token (get-in body [:body :access-token])]

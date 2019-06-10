@@ -1,7 +1,13 @@
+
+
 (ns oauthsample.core-test
   (:require [clojure.test :refer :all]
-            [oauth-sample.core :refer :all]))
+            [oauthsample.core :refer :all]
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.spec.test.alpha :as stest]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(stest/check `request-auth-token)
+
+(deftest request
+  (testing "check request")
+  (stest/check `request-auth-token))
