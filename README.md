@@ -44,11 +44,9 @@ authorization server.
 Currently there is a single thread through authorizing, to getting
 an authorization code to getting a token and then using it to get User information
 
-Contact: keith_mantell@uk.ibm.com
+Contact: keithmantell@gmail.com
 
 ## License
-
-Copyright © 2018 IBM
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
